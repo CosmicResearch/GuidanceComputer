@@ -34,6 +34,7 @@ class LoggerProcess(Process):
         while os.path.exists(path+str(offset)):
             offset += 1
         self.file = open(path+str(offset), mode="a")
+        self._t0 = time.time()
 
     def run(self):
         nwrites = 0
