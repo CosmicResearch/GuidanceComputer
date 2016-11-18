@@ -45,7 +45,7 @@ class LoggerProcess(Process):
                             + ",(" + str(data[2][0]) + "," + str(data[2][1])
                             + "," + str(data[2][2]) + "))\n")
             nwrites += 1
-            if nwrites >= 1000:
+            if nwrites >= 10:
                 self.file.flush()
                 os.fsync(self.file.fileno())
 
