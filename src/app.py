@@ -21,8 +21,12 @@
 import Logger
 import IMU
 from multiprocessing import Lock, Process, Queue
+import RPI.GPIO as GPIO
 
 if __name__ == "__main__":
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(4, GPIO.OUT)
+    GPIO.output(4, GPIO.HIGH)
     queue = Queue()
     LoggerProcess = Logger.LoggerProcess(queue)
     IMUProcess = IMU.IMUProcess(queue)
