@@ -17,12 +17,17 @@
 """
 
 
-from multiprocessing import Queue, Process, Lock
+from multiprocessing import Process
 import os
 import time
 
 
 class LoggerProcess(Process):
+
+    """
+    This class represents a datalogger process.
+    All the datalogging (except for error logging) should be done here.
+    """
 
     def __init__(self, queue):
         Process.__init__(self)
@@ -55,3 +60,4 @@ class LoggerProcess(Process):
         self.file.close()
         self.queue.close()
         Process.terminate(self)
+        
