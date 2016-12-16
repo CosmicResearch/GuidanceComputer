@@ -149,7 +149,7 @@ class IMUProcess(Process):
     def correct_sleep(self, sleep_time):
         """
         Sleeps the thread for sleep_time seconds.
-        We have tested on a RPi 3 that time.sleep(sleep_time) with sleep_time < 0 will not
+        We have tested on a RPi 3 that time.sleep(sleep_time) with 0 <= sleep_time <= 1 will not
         sleep for sleep_time but for a random time. According to the documentation this should
         not happen.
         """
