@@ -1,5 +1,3 @@
-			#!/usr/bin/python3
-
 """
     Guidance Computer Software
     Copyright (C) 2016 Associacio Cosmic Research
@@ -17,30 +15,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import ConfigParser
-from Queue import Queue
-from Processes import SensorProcess, CommunicatorProcess
-import RPi.GPIO as GPIO
 
-def main():
-    config = ConfigParser.ConfigParser()
-    config.read("./config.ini")
-    led = int(config.get("LED", "PowerLedPin"))
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(led, GPIO.OUT)
-    GPIO.output(led, GPIO.HIGH)
-    readings = Queue()
-    orders = Queue()
-    logger = CommunicatorProcess.CommunicatorProcess(orders, readings)
-    sensor = SensorProcess.SensorProcess(readings, orders)
-    logger.start()
-    sensor.start()
-    try:
-        logger.join()
-        sensor.join()
-    except:
-        sensor.stop()
-        logger.stop()
+class SensorBase:
 
-if __name__ == "__main__":
-    main()
+    def __init__(self):
+        self.current_data = None
+        self.last_data = None
+        raise NotImplementedError()
+
+    def init_sensor(self):
+        """
+        Initializes the sensor
+        """
+        raise NotImplementedError()
+
+    def read(self, new_data=None, checks=True):
+        '''
+        Tells the sensor to read a new value.
+        '''
+        raise NotImplementedError()
+
+    def set_read_callback(self, callback):
+        """
+        Sets the callback to call when the read has ended succesfully.
+        """
+        raise NotImplementedError()

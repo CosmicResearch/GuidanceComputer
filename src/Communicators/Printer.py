@@ -1,5 +1,3 @@
-			#!/usr/bin/python3
-
 """
     Guidance Computer Software
     Copyright (C) 2016 Associacio Cosmic Research
@@ -17,30 +15,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import ConfigParser
-from Queue import Queue
-from Processes import SensorProcess, CommunicatorProcess
-import RPi.GPIO as GPIO
 
-def main():
-    config = ConfigParser.ConfigParser()
-    config.read("./config.ini")
-    led = int(config.get("LED", "PowerLedPin"))
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(led, GPIO.OUT)
-    GPIO.output(led, GPIO.HIGH)
-    readings = Queue()
-    orders = Queue()
-    logger = CommunicatorProcess.CommunicatorProcess(orders, readings)
-    sensor = SensorProcess.SensorProcess(readings, orders)
-    logger.start()
-    sensor.start()
-    try:
-        logger.join()
-        sensor.join()
-    except:
-        sensor.stop()
-        logger.stop()
+from Communicators import CommunicatorBase
 
-if __name__ == "__main__":
-    main()
+class Printer(CommunicatorBase.CommunicatorBase):
+
+    def __init__(self):
+        pass
+
+    def init(self):
+        pass
+
+    def read(self):
+        return []
+
+    def write(self, data):
+        print(data)

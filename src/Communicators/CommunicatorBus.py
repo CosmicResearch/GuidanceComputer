@@ -16,8 +16,30 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-LIFTOFF_ALTITUDE = 20
-MAIN_ALTITUDE = 200
-MAIN_PIN = 18
-DROGUE_PIN = 17
-NUMBER_READS = 10
+class CommunicatorBus:
+
+    def __init__(self, config_file):
+        self.communicator_list = []
+
+    def write(self, data):
+        """
+        Write data to all the communicators
+        """
+        for communicator in self.communicator_list:
+            communicator.write(data)
+
+    def register_communicator(self, communicator):
+        """
+        Register a new communicator
+        """
+        communicator.init()
+        self.communicator_list.append(communicator)
+
+    def read(self):
+        """
+        Reads updates from all the communicators
+        """
+        updates = []
+        for communicator in self.communicator_list:
+            updates += communicator.read()
+        return updates
