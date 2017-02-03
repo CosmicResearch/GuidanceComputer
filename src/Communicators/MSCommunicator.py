@@ -53,4 +53,4 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
 
     def init(self):
-        raise NotImplementedError
+        pass
