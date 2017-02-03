@@ -16,15 +16,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
 class CommunicatorBase:
 
     def __init__(self):
         raise NotImplementedError
 
+
     def read(self):
         raise NotImplementedError
 
     def write(self, data):
+        raise NotImplementedError
+
+    def shutDown(self):
         raise NotImplementedError
 
     def init(self):
