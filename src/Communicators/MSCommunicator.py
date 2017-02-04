@@ -33,9 +33,14 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
         #self.trans.setHighPower(True)  #done by default when initializing
         #self.trans.setHighPowerRegs(False) #done by default when changeing to rx mode
         self.trans.rcCalibration()
+        self.trans.receiveBegin() #Initialize parameters and set rx mode
 
 
     def read(self):
+        if self.trans.receiveDone():
+            if self.trans.ACKRequested():
+                self.trans.sendACK()
+            return True
         self.trans.receiveBegin() #Initialize parameters and set rx mode
         time.sleep(.05)
         if self.trans.receiveDone():
