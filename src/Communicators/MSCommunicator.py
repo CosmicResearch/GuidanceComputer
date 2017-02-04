@@ -37,17 +37,21 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
 
     def read(self):
+        data_recv = []
+
         if self.trans.receiveDone():
             if self.trans.ACKRequested():
                 self.trans.sendACK()
-            return True
-        self.trans.receiveBegin() #Initialize parameters and set rx mode
-        time.sleep(.05)
-        if self.trans.receiveDone():
-            if self.trans.ACKRequested():
-                self.trans.sendACK()
-            return True
-        return False
+            data_recv = self.trans.DATA
+
+        #We really don't need this second part, but it's a good way to make the transceiver stay a few time in silence
+        elif self.trans.receiveBegin(): #Initialize parameters and set rx mode
+            time.sleep(.05) #Maybe we could increase this value
+            if self.trans.receiveDone():
+                if self.trans.ACKRequested():
+                    self.trans.sendACK()
+                data_recv = self.trans.DATA
+        return data_recv
 
 
     def write(self, data):
