@@ -37,20 +37,22 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
     def read(self):
         self.trans.receiveBegin() #Initialize parameters and set rx mode
-        while not self.trans.receiveDone():
-            time.sleep(.05)
-        if self.trans.ACKRequested():
-            self.trans.sendACK()
+        time.sleep(.05)
+        if self.trans.receiveDone():
+            if self.trans.ACKRequested():
+                self.trans.sendACK()
+            return True
+        return False
 
 
     def write(self, data):
-        #data to send: time, altitude, pressure, temperature, roll, pitch, yaw.
+        #data to send: id, time, pressure, temperature, roll, pitch, yaw.
         #dimension of toSend = 61 to take advantage of the built in AES/CRC we want to limit the frame size to the internal FIFO size (66 bytes - 3 bytes overhead)
-        toSend = pack('d', data.current_data.time, data.current_data.altitude, data.current_data.pressure, data.current_data.temperature, data.current_data.orientation.get('roll'), data.current_data.orientation.get('pitch'), data.current_data.orientation.get('yaw'))
+        toSend = pack('ddddddd', 0, data.current_data.time, data.current_data.pressure, data.current_data.temperature, data.current_data.orientation.get('roll'), data.current_data.orientation.get('pitch'), data.current_data.orientation.get('yaw'))
         self.trans.send(1,toSend) #When finish sending changes to rx mode
 
-        #tdata to send: time, acceleration, velocity, latitude, longitude
-        toSend = pack('d', data.current_data.time, data.current_data.acceleration, data.current_data.velocity, data.current_data.latitude, data.current_data.longitude)
+        #tdata to send: id, time, altitude, acceleration, velocity, latitude, longitude
+        toSend = pack('ddddddd', 1, data.current_data.time, data.current_data.altitude, data.current_data.acceleration, data.current_data.velocity, data.current_data.latitude, data.current_data.longitude)
         self.trans.send(1,toSend) #When finish sending changes to rx mode
 
     def shutDown(self):
