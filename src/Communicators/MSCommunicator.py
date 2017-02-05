@@ -16,17 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import struct
+import time
 import RFM69
 from RFM69registers import *
-import time
 from Communicators import CommunicatorBase
-from struct import *
-
 
 class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
     def __init__(self):
-        # def __init__(self, freqBand, nodeID, networkID, isRFM69HW = False, intPin = 18, rstPin = 29, spiBus = 0, spiDevice = 0):
+        # def __init__(self, freqBand, nodeID, networkID, isRFM69HW = False,
+        #intPin = 18, rstPin = 29, spiBus = 0, spiDevice = 0):
         self.trans = RFM69.RFM69(RF69_433MHZ, 2, 2, True, 18, 29, 0, 0)
         # Set max power 20 dBm
         # self.trans.setPowerLevel(RF_PALEVEL_OUTPUTPOWER_11111) #done by default when initializing
@@ -38,13 +38,12 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
     def read(self):
         data_recv = []
-
         if self.trans.receiveDone():
             if self.trans.ACKRequested():
                 self.trans.sendACK()
             data_recv = self.trans.DATA
-
-        #We really don't need this second part, but it's a good way to make the transceiver stay a few time in silence
+        #We really don't need this second part, but it's a good way to make
+        #the transceiver stay a few time in silence
         elif self.trans.receiveBegin(): #Initialize parameters and set rx mode
             time.sleep(.05) #Maybe we could increase this value
             if self.trans.receiveDone():
@@ -56,15 +55,20 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
 
     def write(self, data):
         #data to send: id, time, pressure, temperature, roll, pitch, yaw.
-        #dimension of toSend = 61 to take advantage of the built in AES/CRC we want to limit the frame size to the internal FIFO size (66 bytes - 3 bytes overhead)
-        toSend = pack('ddddddd', 0, data.current_data.time, data.current_data.pressure, data.current_data.temperature, data.current_data.orientation.get('roll'), data.current_data.orientation.get('pitch'), data.current_data.orientation.get('yaw'))
-        self.trans.send(1,toSend) #When finish sending changes to rx mode
+        #dimension of toSend = 61 to take advantage of the built in AES/CRC we want to limit the
+        #frame size to the internal FIFO size (66 bytes - 3 bytes overhead)
+        to_send = struct.pack('cdddddd', "0", data.current_data.time, data.current_data.pressure,
+                              data.current_data.temperature, data.current_data.orientation["roll"],
+                              data.current_data.orientation["pitch"],
+                              data.current_data.orientation["yaw"])
+        self.trans.send(1, to_send) #When finish sending changes to rx mode
+        #data to send: id, time, altitude, velocity, latitude, longitude
+        to_send = struct.pack('cdddddd', "1", data.current_data.time, data.current_data.altitude,
+                              data.current_data.velocity, data.current_data.latitude,
+                              data.current_data.longitude)
+        self.trans.send(1, to_send) #When finish sending changes to rx mode
 
-        #tdata to send: id, time, altitude, acceleration, velocity, latitude, longitude
-        toSend = pack('ddddddd', 1, data.current_data.time, data.current_data.altitude, data.current_data.acceleration, data.current_data.velocity, data.current_data.latitude, data.current_data.longitude)
-        self.trans.send(1,toSend) #When finish sending changes to rx mode
-
-    def shutDown(self):
+    def shutdown(self):
         self.trans.shutdown()
 
 

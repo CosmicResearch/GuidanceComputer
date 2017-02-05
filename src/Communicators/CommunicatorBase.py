@@ -22,14 +22,13 @@ class CommunicatorBase:
     def __init__(self):
         raise NotImplementedError
 
-
     def read(self):
         raise NotImplementedError
 
     def write(self, data):
         raise NotImplementedError
 
-    def shutDown(self):
+    def shutdown(self):
         raise NotImplementedError
 
     def init(self):
