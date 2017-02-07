@@ -1077,7 +1077,7 @@ RF69_915MHZ = 91
 
 RF69_MAX_DATA_LEN = 61 # to take advantage of the built in AES/CRC we want to limit the frame size to the internal FIFO size (66 bytes - 3 bytes overhead)
 
-CSMA_LIMIT = -90 # upper RX signal sensitivity threshold in dBm for carrier sense access
+CSMA_LIMIT = -105 # upper RX signal sensitivity threshold in dBm for carrier sense access
 RF69_MODE_SLEEP = 0 # XTAL OFF
 RF69_MODE_STANDBY = 1 # XTAL ON
 RF69_MODE_SYNTH	= 2 # PLL ON

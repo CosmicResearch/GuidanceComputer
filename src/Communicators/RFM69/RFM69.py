@@ -58,9 +58,9 @@ class RFM69(object):
           # +13dBm formula: Pout=-18+OutputPower (with PA0 or PA1**)
           # +17dBm formula: Pout=-14+OutputPower (with PA1 and PA2)**
           # +20dBm formula: Pout=-11+OutputPower (with PA1 and PA2)** and high power PA settings (section 3.3.7 in datasheet)
-          #0x11: [REG_PALEVEL, RF_PALEVEL_PA0_ON | RF_PALEVEL_PA1_OFF | RF_PALEVEL_PA2_OFF | RF_PALEVEL_OUTPUTPOWER_11111],
+          0x11: [REG_PALEVEL, RF_PALEVEL_PA0_ON | RF_PALEVEL_PA1_OFF | RF_PALEVEL_PA2_OFF | RF_PALEVEL_OUTPUTPOWER_11111],
           #over current protection (default is 95mA)
-          #0x13: [REG_OCP, RF_OCP_ON | RF_OCP_TRIM_95],
+          0x13: [REG_OCP, RF_OCP_ON | RF_OCP_TRIM_95],
 
           # RXBW defaults are { REG_RXBW, RF_RXBW_DCCFREQ_010 | RF_RXBW_MANT_24 | RF_RXBW_EXP_5} (RxBw: 10.4khz)
           #//(BitRate < 2 * RxBw)
@@ -69,7 +69,7 @@ class RFM69(object):
           #DIO0 is the only IRQ we're using
           0x25: [REG_DIOMAPPING1, RF_DIOMAPPING1_DIO0_01],
           #must be set to dBm = (-Sensitivity / 2) - default is 0xE4=228 so -114dBm
-          0x29: [REG_RSSITHRESH, 220],
+          0x29: [REG_RSSITHRESH, 228],
           #/* 0x2d */ { REG_PREAMBLELSB, RF_PREAMBLESIZE_LSB_VALUE } // default 3 preamble bytes 0xAAAAAA
           0x2e: [REG_SYNCCONFIG, RF_SYNC_ON | RF_SYNC_FIFOFILL_AUTO | RF_SYNC_SIZE_2 | RF_SYNC_TOL_0],
           #attempt to make this compatible with sync1 byte of RFM12B lib
