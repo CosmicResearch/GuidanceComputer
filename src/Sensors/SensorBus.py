@@ -35,7 +35,7 @@ class SensorBus:
         self.read_callback = None
         self.error_callback = None
         self.thread_lock = Lock()
-        self.terminate_event = Event()
+        self.running = True
         self.thread = None
         config = ConfigParser.ConfigParser()
         config.read(config_file)
@@ -71,10 +71,10 @@ class SensorBus:
         Stops reading the sensors
         """
         if self.thread and self.thread.is_alive():
-            self.terminate_event.set()
+            self.running = False
 
     def _read_loop(self):
-        while not self.terminate_event.is_set():
+        while not self.running:
             time.sleep(self.poll_rate)
             data = SensorData.SensorData()
             for sensor in self.sensor_list:
@@ -91,6 +91,6 @@ class SensorBus:
         """
         try:
             sensor.init_sensor()
-        except SensorException.SensorException as e:
-            self.error_callback(e)
+        except SensorException.SensorException as exception:
+            self.error_callback(exception)
         self.sensor_list.append(sensor)

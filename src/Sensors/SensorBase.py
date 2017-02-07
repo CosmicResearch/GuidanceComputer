@@ -32,6 +32,11 @@ class SensorBase:
     def read(self, new_data=None, checks=True):
         '''
         Tells the sensor to read a new value.
+
+        checks: boolean. if False, no checks will be performed to the readings
+
+        new_data: SensorData. if not None, the sensor will populate it
+                  instead of creating a new object
         '''
         raise NotImplementedError()
 

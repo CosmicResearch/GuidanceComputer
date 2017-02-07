@@ -42,6 +42,7 @@ class Rocket:
         self.current_data = None
         self.drogue_fired = False
         self.main_fired = False
+        self.message_callback = None
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.drogue_pin, GPIO.OUT)
         GPIO.output(self.drogue_pin, GPIO.HIGH)
@@ -86,6 +87,8 @@ class Rocket:
         self.drogue_fired = True
         time.sleep(20.0/1000.0)
         GPIO.output(self.drogue_pin, GPIO.HIGH)
+        if self.message_callback:
+            self.message_callback("Drogue fired")
 
 
     def open_main(self):
@@ -96,6 +99,11 @@ class Rocket:
         self.main_fired = True
         time.sleep(20.0/1000.0)
         GPIO.output(self.main_pin, GPIO.HIGH)
+        if self.message_callback:
+            self.message_callback("Main fired")
+
+    def set_message_callback(self, callback):
+        self.message_callback = callback
 
     @staticmethod
     def nearest_int(number):

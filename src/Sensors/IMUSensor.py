@@ -37,6 +37,7 @@ class IMUSensor(SensorBase.SensorBase):
         self.last_data = None
         self.current_data = None
         self.callback = None
+        self.is_initialized = False
 
 
     def init_sensor(self):
@@ -56,29 +57,37 @@ class IMUSensor(SensorBase.SensorBase):
         self.poll_rate = float(float(self.imu.IMUGetPollInterval())/1000.0)
         self.current_data = SensorData.SensorData(time=time.time())
         self.current_data.altitude = 0
-        while self.current_data.altitude == 0:
+        self.is_initialized = True
+        readings = 10
+        while readings >= 0: #Warm up the sensor
             time.sleep(self.poll_rate)
-            try:
-                self.read(checks=False)
-            except IMUException.IMUException:
-                pass
-        self.last_data = self.current_data
+            self.read(checks=False)
+            readings -= 1
+            self.last_data = self.current_data
 
     def read(self, new_data=None, checks=True):
-        trying = True
-        attempts = 100
-        while trying:
-            if not self.imu.IMURead():
-                attempts -= 1
-                if attempts == 50:
-                    self.init_sensor()
-                if attempts == 0:
+        if not self.is_initialized:
+            self.init_sensor()
+        if checks:
+            trying = True
+            attempts = 100
+            while trying:
+                if not self.imu.IMURead():
+                    attempts -= 1
+                    if attempts%10 == 0:
+                        try:
+                            self.init_sensor()
+                        except IMUException.IMUException:
+                            raise IMUException.IMUException("Cant read from IMU")
+                    if attempts == 0:
+                        trying = False
+                else:
                     trying = False
-            else:
-                trying = False
-        if attempts == 0:
-            raise IMUException.IMUException("Cant read from IMU")
-            print("Cant read from imu")
+            if attempts == 0:
+                raise IMUException.IMUException("Cant read from IMU")
+                #print("Cant read from imu")
+        else:
+            self.imu.IMURead()
         return self._read(new_data, checks)
 
     def _read(self, data=None, checks=True):
@@ -142,17 +151,4 @@ class IMUSensor(SensorBase.SensorBase):
         to SI units.
         """
         return 44330.8 * (1 - pow(pressure / 1013.25, 0.190263))
-
-    def correct_sleep(self, sleep_time):
-        """
-        Sleeps the thread for sleep_time seconds.
-        We have tested on a RPi 3 that time.sleep(sleep_time) with 0 <= sleep_time <= 1 will not
-        sleep for sleep_time but for a random time. According to the documentation this should
-        not happen.
-        """
-        delta_time = 0
-        before_sleep = time.time()
-        while delta_time < sleep_time:
-            time.sleep(sleep_time - delta_time)
-            delta_time = time.time() - before_sleep
-
+        

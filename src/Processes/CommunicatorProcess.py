@@ -19,7 +19,7 @@
 
 from threading import Thread
 from Communicators import CommunicatorBus
-from Communicators import Logger, Printer
+from Communicators import Logger, Printer, MSCommunicator
 
 
 class CommunicatorProcess(Thread):
@@ -37,6 +37,7 @@ class CommunicatorProcess(Thread):
         self.daemon = True
         self.communicator_bus = CommunicatorBus.CommunicatorBus("./config.ini")
         self.communicator_bus.register_communicator(Logger.Logger())
+        self.communicator_bus.register_communicator(MSCommunicator.RFMCommunicator())
         #self.communicator_bus.register_communicator(Printer.Printer())
         self.running = True
 
@@ -50,3 +51,5 @@ class CommunicatorProcess(Thread):
 
     def stop(self):
         self.running = False
+        self.communicator_bus.shutdown()
+

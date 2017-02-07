@@ -43,3 +43,10 @@ class CommunicatorBus:
         for communicator in self.communicator_list:
             updates += communicator.read()
         return updates
+
+    def shutdown(self):
+        """
+        Closes all communicators
+        """
+        for communicator in self.communicator_list:
+            communicator.shutdown()

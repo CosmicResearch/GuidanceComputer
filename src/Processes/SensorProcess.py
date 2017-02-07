@@ -42,6 +42,7 @@ class SensorProcess(Thread):
         self.sensor_bus.register_sensor(IMUSensor.IMUSensor())
         self.sensor_bus.register_sensor(GPSSensor.GPSSensor())
         self.rocket = Rocket.Rocket("./config.ini")
+        self.rocket.set_message_callback(self.send_data)
         handler = logging.FileHandler("./sensor_errors.log")
         config = ConfigParser.ConfigParser()
         config.read("./config.ini")
@@ -59,15 +60,14 @@ class SensorProcess(Thread):
     def run(self):
         self.sensor_bus.start_reading()
         while self.running:
-            order = self.queue_in.get(True)
-            self.process_order(order)
+            self.receive_data()
 
     def on_read(self, reading):
         """
         Read callback
         """
         self.rocket.update_values(reading)
-        self.queue_out.put(reading)
+        self.send_data(reading)
 
     def on_error(self, error):
         """
@@ -75,13 +75,20 @@ class SensorProcess(Thread):
         """
         self.logger.error(error.args)
 
-    def process_order(self, order):
+    def send_data(self, message):
         """
-        Processes an order received by an external actor.
+        Send data to the communicators.
+        """
+        self.queue_out(message)
+
+    def receive_data(self):
+        """
+        Receive data from the communicators.
         TODO
         """
-        if order == "ECHO":
-            self.queue_out("AYY LMAO")
+        data = self.queue_in.get(True)
+        if data == "ECHO":
+            self.send_data("AYY LMAO")
 
     def stop(self):
         self.sensor_bus.stop_reading()

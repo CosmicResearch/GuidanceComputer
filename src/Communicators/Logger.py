@@ -53,3 +53,8 @@ class Logger(CommunicatorBase.CommunicatorBase):
 
     def read(self):
         return []
+
+    def shutdown(self):
+        self.data_file.close()
+        self.other_file.close()
+        
