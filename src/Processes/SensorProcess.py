@@ -79,7 +79,7 @@ class SensorProcess(Thread):
         """
         Send data to the communicators.
         """
-        self.queue_out(message)
+        self.queue_out.put(message)
 
     def receive_data(self):
         """
