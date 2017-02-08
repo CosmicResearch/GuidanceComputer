@@ -23,18 +23,18 @@ class SensorData:
     sensor fusion.
     """
 
-    def __init__(self, time=None):
+    def __init__(self, time=0.0):
         self.time = time
-        self.temperature = None
-        self.pressure = None
-        self.altitude = None
-        self.acceleration = ()
-        self.gyro = ()
-        self.orientation = {}
-        self.compass = ()
-        self.velocity = None
-        self.latitude = None
-        self.longitude = None
+        self.temperature = 0.0
+        self.pressure = 0.0
+        self.altitude = 0.0
+        self.acceleration = (0.0, 0.0, 0.0)
+        self.gyro = (0.0, 0.0, 0.0)
+        self.orientation = {"pitch": 0.0, "roll": 0.0, "yaw": 0.0}
+        self.compass = (0.0, 0.0, 0.0)
+        self.velocity = 0.0
+        self.latitude = 0.0
+        self.longitude = 0.0
 
     @staticmethod
     def copy(data):

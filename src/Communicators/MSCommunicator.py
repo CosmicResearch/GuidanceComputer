@@ -69,7 +69,7 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
                                   data.current_data.longitude)
             self.trans.send(1, to_send) #When finish sending changes to rx mode
         else:
-            self.trans.send(1, data)
+            self.trans.send(1, data.__str__())
 
     def shutdown(self):
         self.trans.shutdown()
