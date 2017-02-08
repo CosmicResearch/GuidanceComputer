@@ -74,7 +74,7 @@ class SensorBus:
             self.running = False
 
     def _read_loop(self):
-        while not self.running:
+        while self.running:
             time.sleep(self.poll_rate)
             data = SensorData.SensorData()
             for sensor in self.sensor_list:
