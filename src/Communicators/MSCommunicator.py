@@ -65,7 +65,7 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
                                   data.orientation["yaw"])
             self.trans.send(1, to_send) #When finish sending changes to rx mode
             #data to send: id, time, altitude, velocity, latitude, longitude
-            to_send = struct.pack('cdddddd', "1", data.time, data.altitude,
+            to_send = struct.pack('cddddd', "1", data.time, data.altitude,
                                   data.velocity, data.latitude,
                                   data.longitude)
             self.trans.send(1, to_send) #When finish sending changes to rx mode
