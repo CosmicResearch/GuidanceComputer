@@ -27,7 +27,7 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
     def __init__(self):
         # def __init__(self, freqBand, nodeID, networkID, isRFM69HW = False,
         #intPin = 18, rstPin = 29, spiBus = 0, spiDevice = 0):
-        self.trans = RFM69.RFM69(RFM69registers.RFM69_433MHZ, 2, 2, True, 18, 29, 0, 0)
+        self.trans = RFM69.RFM69(RF69registers.RFM69_433MHZ, 2, 2, True, 18, 29, 0, 0)
         self.trans.encrypt("")
         # Set max power 20 dBm
         # self.trans.setPowerLevel(RF_PALEVEL_OUTPUTPOWER_11111) #done by default when initializing
