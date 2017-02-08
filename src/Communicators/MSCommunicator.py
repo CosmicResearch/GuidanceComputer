@@ -59,15 +59,15 @@ class RFMCommunicator(CommunicatorBase.CommunicatorBase):
             #data to send: id, time, pressure, temperature, roll, pitch, yaw.
             #dimension of toSend = 61 to take advantage of the built in AES/CRC we want to limit the
             #frame size to the internal FIFO size (66 bytes - 3 bytes overhead)
-            to_send = struct.pack('cdddddd', "0", data.current_data.time, data.current_data.pressure,
-                                  data.current_data.temperature, data.current_data.orientation["roll"],
-                                  data.current_data.orientation["pitch"],
-                                  data.current_data.orientation["yaw"])
+            to_send = struct.pack('cdddddd', "0", data.time, data.pressure,
+                                  data.temperature, data.orientation["roll"],
+                                  data.orientation["pitch"],
+                                  data.orientation["yaw"])
             self.trans.send(1, to_send) #When finish sending changes to rx mode
             #data to send: id, time, altitude, velocity, latitude, longitude
-            to_send = struct.pack('cdddddd', "1", data.current_data.time, data.current_data.altitude,
-                                  data.current_data.velocity, data.current_data.latitude,
-                                  data.current_data.longitude)
+            to_send = struct.pack('cdddddd', "1", data.time, data.altitude,
+                                  data.velocity, data.latitude,
+                                  data.longitude)
             self.trans.send(1, to_send) #When finish sending changes to rx mode
         else:
             self.trans.send(1, data.__str__())
