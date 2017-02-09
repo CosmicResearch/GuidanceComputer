@@ -59,15 +59,21 @@ class GPSSensor(SensorBase.SensorBase, Thread):
         """
         Polls the gps socket
         """
-        while self.thread_running:
-            self.report = self.session.next()
-            try:
-                v_lat = self.report["lat"]
-                v_lon = self.report["lon"]
-                self.lat = v_lat
-                self.lon = v_lon
-            except KeyError:
-                pass
+        try:
+            while self.thread_running:
+                self.report = self.session.next()
+                try:
+                    if self.report['class'] == 'DEVICE':
+                        self.session.close()
+                        self.session = gps(mode=WATCH_ENABLE)
+                    v_lat = self.report["lat"]
+                    v_lon = self.report["lon"]
+                    self.lat = v_lat
+                    self.lon = v_lon
+                except KeyError:
+                    pass
+        except StopIteration:
+            return
 
     def set_read_callback(self, callback):
         self.callback = callback
